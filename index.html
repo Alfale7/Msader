@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>حجز مركز مصادر التعلم</title>
+<style>
+  body{font-family:Tahoma,Arial;max-width:720px;margin:24px auto;padding:0 12px}
+  h1{font-size:22px;margin:12px 0}
+  form{border:1px solid #ddd;border-radius:10px;padding:16px}
+  label{display:block;margin:10px 0 6px}
+  input,select,textarea,button{
+    width:100%;padding:10px;border:1px solid #ccc;border-radius:8px
+  }
+  button{cursor:pointer;font-weight:bold}
+  .row{display:flex;gap:12px}
+  .row > div{flex:1}
+  .note{font-size:13px;color:#666;margin-top:6px}
+  .ok{background:#f0fff3;border:1px solid #bde5c8;padding:10px;border-radius:8px;margin-top:12px}
+  .err{background:#fff4f4;border:1px solid #f1b0b7;padding:10px;border-radius:8px;margin-top:12px}
+</style>
+</head>
+<body>
+
+<h1>نموذج حجز مركز مصادر التعلم</h1>
+<form id="bookingForm">
+  <label>اسم المعلم</label>
+  <input type="text" name="teacherName" required>
+
+  <label>البريد الإلكتروني</label>
+  <input type="email" name="teacherEmail" required>
+
+  <div class="row">
+    <div>
+      <label>التاريخ</label>
+      <input type="date" name="date" required>
+    </div>
+    <div>
+      <label>الحصة</label>
+      <select name="period" required>
+        <option value="">اختر الحصة…</option>
+        <option>1</option><option>2</option><option>3</option>
+        <option>4</option><option>5</option><option>6</option><option>7</option>
+      </select>
+    </div>
+  </div>
+
+  <label>الغرض من الاستخدام (اختياري)</label>
+  <textarea name="purpose" rows="3" placeholder="مثال: درس تطبيقي/عرض مرئي/تدريب…"></textarea>
+
+  <button type="submit">إرسال الحجز</button>
+  <div class="note">بعد الإرسال سيصلك تأكيد على بريدك الإلكتروني، ويصل إشعار للمشرف.</div>
+
+  <div id="msg"></div>
+</form>
+
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNeMqPtimSoVEZqUMaTdW8J94ggimOeRkRshpt9ALRt793BggS5G8bRrKNqlyueRUN/exec"; // ← حط رابط الويب-آب هنا
+
+const form = document.getElementById('bookingForm');
+const msg = document.getElementById('msg');
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  msg.innerHTML = "";
+  const data = Object.fromEntries(new FormData(form).entries());
+
+  // تنسيق التاريخ إلى yyyy-mm-dd للتطابق
+  if (data.date) {
+    const d = new Date(data.date);
+    data.date = d.toISOString().slice(0,10);
+  }
+
+  try {
+    const res = await fetch(WEB_APP_URL, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(data)
+    });
+    const json = await res.json();
+
+    if (json.ok) {
+      msg.innerHTML = `<div class="ok">تم تأكيد الحجز ✅<br>رقم الحجز: <b>${json.bookingId}</b></div>`;
+      form.reset();
+    } else {
+      msg.innerHTML = `<div class="err">تعذّر إتمام الحجز: ${json.error || "خطأ غير معروف"}</div>`;
+    }
+  } catch (err) {
+    msg.innerHTML = `<div class="err">مشكلة اتصال بالخادم. حاول لاحقاً.</div>`;
+  }
+});
+</script>
+</body>
+</html>
