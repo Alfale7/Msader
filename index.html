@@ -88,49 +88,43 @@
     <div class="note">بعد الإرسال سيصلك تأكيد على بريدك الإلكتروني، ويصل إشعار للمشرف.</div>
     <div id="msg"></div>
   </form>
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyOpDQwxz5mIeN4SfPzVQQRzl0Pr4gjQBRF4r_SazZfvSc59R7C66Mni_VrHEl5t305/exec";
 
-  <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyOpDQwxz5mIeN4SfPzVQQRzl0Pr4gjQBRF4r_SazZfvSc59R7C66Mni_VrHEl5t305/exec";
+const form = document.getElementById('bookingForm');
+const msg = document.getElementById('msg');
 
-    const form = document.getElementById('bookingForm');
-    const msg = document.getElementById('msg');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  msg.innerHTML = "جاري الإرسال ...";
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      msg.textContent = "جارٍ الإرسال...";
-      msg.className = "";
+  const data = {
+    teacherName: form.teacherName.value,
+    teacherEmail: form.teacherEmail.value,
+    date: form.date.value,
+    period: form.period.value,
+    purpose: form.purpose.value
+  };
 
-      const data = {
-        teacherName: form.teacherName.value,
-        teacherEmail: form.teacherEmail.value,
-        date: form.date.value,
-        period: form.period.value,
-        purpose: form.purpose.value
-      };
-
-      try {
-        const response = await fetch(WEB_APP_URL, {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        });
-
-        const result = await response.json();
-        if (result.ok) {
-          msg.textContent = "تم إرسال الحجز بنجاح ✅";
-          msg.className = "success";
-          form.reset();
-        } else {
-          msg.textContent = "خطأ: " + result.error;
-          msg.className = "error";
-        }
-      } catch (error) {
-        msg.textContent = "مشكلة اتصال بالخادم. حاول لاحقاً.";
-        msg.className = "error";
-      }
+  try {
+    const response = await fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { "Content-Type": "application/json" }
     });
-  </script>
+
+    const result = await response.json();
+    if (result.ok) {
+      msg.innerHTML = "✅ تم إرسال الحجز بنجاح";
+      form.reset();
+    } else {
+      msg.innerHTML = "❌ خطأ: " + result.error;
+    }
+  } catch (err) {
+    msg.innerHTML = "⚠️ مشكلة اتصال بالخادم. حاول لاحقاً.";
+  }
+});
+</script>
+
 </body>
 </html>
