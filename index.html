@@ -60,13 +60,13 @@
   <h2>نموذج حجز مركز مصادر التعلم</h2>
   <form id="bookingForm">
     <label>اسم المعلم</label>
-    <input type="text" name="teacherName" required />
+    <input type="text" name="teacherName" required>
 
     <label>البريد الإلكتروني</label>
-    <input type="email" name="teacherEmail" required />
+    <input type="email" name="teacherEmail" required>
 
     <label>التاريخ</label>
-    <input type="date" name="date" required />
+    <input type="date" name="date" required>
 
     <label>الحصة</label>
     <select name="period" required>
@@ -81,52 +81,50 @@
     </select>
 
     <label>الغرض من الاستخدام (اختياري)</label>
-    <textarea name="purpose" rows="3" placeholder="مثال: درس تطبيقي / عرض مرئي / تدريب..."></textarea>
+    <textarea name="purpose" rows="3" placeholder="مثال: درس تطبيقي/عرض مرئي/تدريب..."></textarea>
 
     <button type="submit">إرسال الحجز</button>
     <div class="note">بعد الإرسال سيصلك تأكيد على بريدك الإلكتروني، ويصل إشعار للمشرف.</div>
     <div id="msg"></div>
   </form>
 
-  <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx_jDyfdwMLfXJ-k906Qup-2novtC7rXt24hq_qNVUIE-nwx1Ye8JXpPOEsMHB-plFS/exec";
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx_jDyfdwMLfXJ-k906Qup-2novtC7rXt24hq_qNVUIE-nwx1Ye8JXpPOEsMHB-plFS/exec";
 
-    const form = document.getElementById('bookingForm');
-    const msg = document.getElementById('msg');
+const form = document.getElementById('bookingForm');
+const msg = document.getElementById('msg');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      msg.textContent = "جاري الإرسال...";
-      msg.className = "";
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  msg.innerHTML = "⏳ جاري الإرسال ...";
 
-      const data = {
-        teacherName: form.teacherName.value,
-        teacherEmail: form.teacherEmail.value,
-        date: form.date.value,
-        period: form.period.value,
-        purpose: form.purpose.value
-      };
+  const data = {
+    teacherName: form.teacherName.value,
+    teacherEmail: form.teacherEmail.value,
+    date: form.date.value,
+    period: form.period.value,
+    purpose: form.purpose.value
+  };
 
-      try {
-        const response = await fetch(WEB_APP_URL, {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: { "Content-Type": "application/json" }
-        });
-        const result = await response.json();
-        if (result.ok) {
-          msg.textContent = "✅ تم إرسال الحجز بنجاح";
-          msg.className = "success";
-          form.reset();
-        } else {
-          msg.textContent = "❌ خطأ: " + result.error;
-          msg.className = "error";
-        }
-      } catch (error) {
-        msg.textContent = "⚠️ مشكلة اتصال بالخادم. حاول لاحقاً.";
-        msg.className = "error";
-      }
+  try {
+    const response = await fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { "Content-Type": "application/json" }
     });
-  </script>
+
+    const result = await response.json();
+    if (result.ok) {
+      msg.innerHTML = "✅ تم إرسال الحجز بنجاح";
+      form.reset();
+    } else {
+      msg.innerHTML = "❌ خطأ: " + result.error;
+    }
+  } catch (err) {
+    msg.innerHTML = "⚠️ مشكلة اتصال بالخادم. حاول لاحقاً.";
+  }
+});
+</script>
+
 </body>
 </html>
