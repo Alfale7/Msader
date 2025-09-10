@@ -89,7 +89,7 @@
   </form>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx_jDyfdwMLfXJ-k906Qup-2novtC7rXt24hq_qNVUIE-nwx1Ye8JXpPOEsMHB-plFS/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxUyjNrOCPssZSWFT27_5j8Cl-KawyGiEpdG5FBw-_GAMvgN-xbdA2XeKdJ7rWz7tZN/exec";
 
 const form = document.getElementById('bookingForm');
 const msg = document.getElementById('msg');
@@ -116,15 +116,17 @@ form.addEventListener('submit', async (e) => {
     const result = await response.json();
     if (result.ok) {
       msg.innerHTML = "✅ تم إرسال الحجز بنجاح";
+      msg.className = "success";
       form.reset();
     } else {
       msg.innerHTML = "❌ خطأ: " + result.error;
+      msg.className = "error";
     }
   } catch (err) {
     msg.innerHTML = "⚠️ مشكلة اتصال بالخادم. حاول لاحقاً.";
+    msg.className = "error";
   }
 });
 </script>
-
 </body>
 </html>
