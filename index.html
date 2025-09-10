@@ -1,94 +1,136 @@
+
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>حجز مركز مصادر التعلم</title>
-<style>
-  body{font-family:Tahoma,Arial;max-width:720px;margin:24px auto;padding:0 12px}
-  h1{font-size:22px;margin:12px 0}
-  form{border:1px solid #ddd;border-radius:10px;padding:16px}
-  label{display:block;margin:10px 0 6px}
-  input,select,textarea,button{
-    width:100%;padding:10px;border:1px solid #ccc;border-radius:8px
-  }
-  button{cursor:pointer;font-weight:bold}
-  .row{display:flex;gap:12px}
-  .row > div{flex:1}
-  .note{font-size:13px;color:#666;margin-top:6px}
-  .ok{background:#f0fff3;border:1px solid #bde5c8;padding:10px;border-radius:8px;margin-top:12px}
-  .err{background:#fff4f4;border:1px solid #f1b0b7;padding:10px;border-radius:8px;margin-top:12px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نموذج حجز مركز مصادر التعلم</title>
+  <style>
+    body {
+      font-family: "Tahoma", sans-serif;
+      background: #f8f9fa;
+      padding: 20px;
+      direction: rtl;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .note {
+      font-size: 12px;
+      color: #555;
+    }
+    #msg {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+    #msg.success {
+      color: green;
+    }
+    #msg.error {
+      color: red;
+    }
+  </style>
 </head>
 <body>
+  <h2>نموذج حجز مركز مصادر التعلم</h2>
+  <form id="bookingForm">
+    <label>اسم المعلم</label>
+    <input type="text" name="teacherName" required>
 
-<h1>نموذج حجز مركز مصادر التعلم</h1>
-<form id="bookingForm">
-  <label>اسم المعلم</label>
-  <input type="text" name="teacherName" required>
+    <label>البريد الإلكتروني</label>
+    <input type="email" name="teacherEmail" required>
 
-  <label>البريد الإلكتروني</label>
-  <input type="email" name="teacherEmail" required>
+    <label>التاريخ</label>
+    <input type="date" name="date" required>
 
-  <div class="row">
-    <div>
-      <label>التاريخ</label>
-      <input type="date" name="date" required>
-    </div>
-    <div>
-      <label>الحصة</label>
-      <select name="period" required>
-        <option value="">اختر الحصة…</option>
-        <option>1</option><option>2</option><option>3</option>
-        <option>4</option><option>5</option><option>6</option><option>7</option>
-      </select>
-    </div>
-  </div>
+    <label>الحصة</label>
+    <select name="period" required>
+      <option value="">اختر الحصة...</option>
+      <option value="1">الأولى</option>
+      <option value="2">الثانية</option>
+      <option value="3">الثالثة</option>
+      <option value="4">الرابعة</option>
+      <option value="5">الخامسة</option>
+      <option value="6">السادسة</option>
+      <option value="7">السابعة</option>
+    </select>
 
-  <label>الغرض من الاستخدام (اختياري)</label>
-  <textarea name="purpose" rows="3" placeholder="مثال: درس تطبيقي/عرض مرئي/تدريب…"></textarea>
+    <label>الغرض من الاستخدام (اختياري)</label>
+    <textarea name="purpose" rows="3" placeholder="مثال: درس تطبيقي/عرض مرئي/تدريب..."></textarea>
 
-  <button type="submit">إرسال الحجز</button>
-  <div class="note">بعد الإرسال سيصلك تأكيد على بريدك الإلكتروني، ويصل إشعار للمشرف.</div>
+    <button type="submit">إرسال الحجز</button>
+    <div class="note">بعد الإرسال سيصلك تأكيد على بريدك الإلكتروني، ويصل إشعار للمشرف.</div>
+    <div id="msg"></div>
+  </form>
 
-  <div id="msg"></div>
-</form>
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyOpDQwxz5mIeN4SfPzVQQRzl0Pr4gjQBRF4r_SazZfvSc59R7C66Mni_VrHEl5t305/exec";
 
-<script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyOpDQwxz5mIeN4SfPzVQQRzl0Pr4gjQBRF4r_SazZfvSc59R7C66Mni_VrHEl5t305/exec"; // ← حط رابط الويب-آب هنا
+    const form = document.getElementById('bookingForm');
+    const msg = document.getElementById('msg');
 
-const form = document.getElementById('bookingForm');
-const msg = document.getElementById('msg');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = "جارٍ الإرسال...";
+      msg.className = "";
 
-form.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  msg.innerHTML = "";
-  const data = Object.fromEntries(new FormData(form).entries());
+      const data = {
+        teacherName: form.teacherName.value,
+        teacherEmail: form.teacherEmail.value,
+        date: form.date.value,
+        period: form.period.value,
+        purpose: form.purpose.value
+      };
 
-  // تنسيق التاريخ إلى yyyy-mm-dd للتطابق
-  if (data.date) {
-    const d = new Date(data.date);
-    data.date = d.toISOString().slice(0,10);
-  }
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
 
-  try {
-    const res = await fetch(WEB_APP_URL, {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify(data)
+        const result = await response.json();
+        if (result.ok) {
+          msg.textContent = "تم إرسال الحجز بنجاح ✅";
+          msg.className = "success";
+          form.reset();
+        } else {
+          msg.textContent = "خطأ: " + result.error;
+          msg.className = "error";
+        }
+      } catch (error) {
+        msg.textContent = "مشكلة اتصال بالخادم. حاول لاحقاً.";
+        msg.className = "error";
+      }
     });
-    const json = await res.json();
-
-    if (json.ok) {
-      msg.innerHTML = `<div class="ok">تم تأكيد الحجز ✅<br>رقم الحجز: <b>${json.bookingId}</b></div>`;
-      form.reset();
-    } else {
-      msg.innerHTML = `<div class="err">تعذّر إتمام الحجز: ${json.error || "خطأ غير معروف"}</div>`;
-    }
-  } catch (err) {
-    msg.innerHTML = `<div class="err">مشكلة اتصال بالخادم. حاول لاحقاً.</div>`;
-  }
-});
-</script>
+  </script>
 </body>
 </html>
